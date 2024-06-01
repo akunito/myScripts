@@ -1,0 +1,12 @@
+# to create bin entry
+ln -s /opt/Rubymine/bin/rubymine.sh /usr/bin/mine
+ln -s $HOME/mySCRIPTS/menu.sh /usr/bin/aku
+
+# start an script
+sudo bash aku
+
+# byobu cheat sheet
+https://gist.github.com/devhero/7b9a7281db0ac4ba683f
+
+# openvpn script for improvements
+https://gist.github.com/android10/ee5c3e93dbcf9b7b31e6ee768cbfd477

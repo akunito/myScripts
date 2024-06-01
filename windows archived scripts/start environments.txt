@@ -1,0 +1,33 @@
+cd C:\Users\Akunito\Dropbox\CODES\PYTHON_dropbox\Mis_entornos\pythontotal16_django\src\
+.\web\Scripts\activate
+cd .\proyecto\
+
+
+
+cd C:\Users\Akunito\Dropbox\CODES\PYTHON_dropbox\Mis_entornos\curso_django\empleados_pruebas\
+.\web_pruebas\Scripts\activate
+cd .\proyecto\
+python manage.py runserver
+ 
+
+
+python manage.py makemigrations
+python manage.py migrate
+ 
+
+
+C:\Users\Akunito\Desktop\kill processes.ps1
+
+
+
+RHEL-testing VM
+ssh root@192.168.102.142
+
+CentOS-testing VM
+ssh root@192.168.102.152
+
+Ubuntu-testing VM 
+ssh usuario@192.168.102.162
+
+apagar
+sudo shutdown now

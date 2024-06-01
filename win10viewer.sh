@@ -1,0 +1,1 @@
+virt-viewer --connect=qemu:///system --domain-name win10
