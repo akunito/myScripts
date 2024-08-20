@@ -10,7 +10,7 @@ main(){
     # show user menu
     clear
     PS3='Please enter your choice: '
-    options=("Update System" "docker menu" "Quit")
+    options=("Update System" "sshfs" "compress PICS" "virsh manager" "docker menu" "Quit")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -35,6 +35,161 @@ main(){
                     esac
                 done
                 ;;
+
+            "sshfs")
+                clear
+                PS3='Please enter your choice: '
+                options=("myserver" "agalaptop" "Quit")
+                select opt in "${options[@]}"
+                do
+                    case $opt in
+
+                        "myserver")
+                            clear
+                            PS3='Please enter your choice: '
+                            options=("mount MacBookPro_BACKUPS" "unmount MacBookPro_BACKUPS" "mount Data_4TB" "unmount Data_4TB" "mount server home" "unmount server home" "mount server Machines" "unmount server Machines" "Quit")
+                            select opt in "${options[@]}"
+                            do
+                                case $opt in
+                                    "mount MacBookPro_BACKUPS")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_unmount.sh
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_mount.sh
+                                        ;;
+
+                                    "unmount MacBookPro_BACKUPS")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_unmount.sh
+                                        ;;
+
+                                    "mount Data_4TB")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_unmount.sh
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_mount.sh
+                                        ;;
+
+                                    "unmount Data_4TB")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_unmount.sh
+                                        ;;
+
+                                    "mount server home")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_unmount.sh
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_mount.sh
+                                        ;;
+
+                                    "unmount server home")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_unmount.sh
+                                        ;;
+
+                                    "mount server Machines")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_unmount.sh
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_mount.sh
+                                        ;;
+
+                                    "unmount server Machines")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_unmount.sh
+                                        ;;
+
+                                    "Quit")
+                                        clear
+                                        break
+                                        ;;
+                                    *) echo "invalid option $REPLY";;
+                                esac
+                            done
+                            ;;
+
+                        "agalaptop")
+                            clear
+                            PS3='Please enter your choice: '
+                            options=("mount agalaptop_HOME" "unmount agalaptop_HOME" "Quit")
+                            select opt in "${options[@]}"
+                            do
+                                case $opt in
+                                    "mount agalaptop_HOME")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_unmount.sh
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_mount.sh
+                                        ;;
+
+                                    "unmount agalaptop_HOME")
+                                        clear
+                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_unmount.sh
+                                        ;;
+
+                                    "Quit")
+                                        clear
+                                        break
+                                        ;;
+                                    *) echo "invalid option $REPLY";;
+                                esac
+                            done
+                            ;;
+
+                        "Quit")
+                            clear
+                            break
+                            ;;
+                        *) echo "invalid option $REPLY";;
+                    esac
+                done
+                ;;
+
+            "compress PICS")
+                clear
+                PS3='Please enter your choice: '
+                options=("Obsidian/*.PNG" "Quit")
+                select opt in "${options[@]}"
+                do
+                    case $opt in
+                        "Obsidian/*.PNG")
+                            clear
+                            ~/syncthing/git_repos/mySCRIPTS/MACOS/functions/compressPNGobsidian.sh
+                            ;;
+
+                        "Quit")
+                            clear
+                            break
+                            ;;
+                        *) echo "invalid option $REPLY";;
+                    esac
+                done
+                ;;
+
+            "virsh manager")
+                clear
+                PS3='Please enter your choice: '
+                options=("Start default network" "Start nm-bridge network" "Quit")
+                select opt in "${options[@]}"
+                do
+                    case $opt in
+                        "Start default network")
+                            clear
+                            virsh net-start default
+                            ;;
+
+                        "Start nm-bridge network")
+                            clear
+                            virsh net-start nm-bridge
+                            sudo ip link add nm-bridge type bridge
+                            sudo ip address ad dev nm-bridge 192.168.0.0/24
+                            sudo ip link set dev nm-bridge up
+                            ;;
+
+                        "Quit")
+                            clear
+                            break
+                            ;;
+                        *) echo "invalid option $REPLY";;
+                    esac
+                done
+                ;;
+
 
             "docker menu")
                 clear

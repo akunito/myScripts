@@ -349,23 +349,19 @@ main(){
             "docker menu")
                 clear
                 PS3='Please enter your choice: '
-                options=("start docker" "log into sql1" "start sql1" "start ubuntu_dev" "save ubuntu_dev status" "remove images" "list images" "list containers" "Quit")
+                options=("add docker user to group" "start minikube" "log into sql1" "start sql1" "start ubuntu_dev" "save ubuntu_dev status" "remove images" "list images" "list containers" "Quit")
                 select opt in "${options[@]}"
                 do
                     case $opt in
-                        "start docker")
+                        "add docker user to group")
                             clear
-                            echo ""
-                            echo "REMEMBER: to create a new image to save the container status, use next command:"
-                            echo "sudo docker commit -p container_id new_container_name"
-                            echo "sudo docker commit -p 524aa76baafb my_ubuntu_20.04_dev2"
-                            echo "more info here https://www.makeuseof.com/run-ubuntu-as-docker-container/"
-                            echo ""
-                            echo "starting docker services..."
-                            sudo systemctl start docker
-                            echo "ready"
+                            sudo usermod -aG docker $USER && newgrp docker
                             ;;
 
+                        "start minikube")
+                            clear
+                            minikube start --driver=docker --container-runtime=containerd
+                            ;;
 
                         "log into sql1")
                             clear
@@ -375,7 +371,6 @@ main(){
                             sudo docker exec -it sql1 "bash"
                             ;;
 
-
                         "start sql1")
                             clear
                             echo ""
@@ -383,8 +378,7 @@ main(){
                             sleep 2
                             sudo docker start sql1
                             ;;
-                            
-                            
+
                         "start ubuntu_dev")
                             clear
                             echo ""

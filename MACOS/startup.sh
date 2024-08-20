@@ -15,7 +15,17 @@ echo "startup_ExternalMonitor path:    $startup_ExternalMonitor_path"
 
 
 # =======================================================================================
-# ============================================================ start services
+# ============================================================ set services
+
+# start fail2ban
+brew services start fail2ban
+
+# stop Apple Music by default
+launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist
+
+# mount backup drive
+~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_mount.sh
+
 sleep 0.5
 # start yabai, if started, restart.
 if pgrep -x "yabai" > /dev/null
@@ -26,7 +36,7 @@ then
 else
     echo "yabai is not running"
     # start yabai
-    yabai --start-serviceDoc
+    yabai --start-service
 fi
 
 sleep 0.5

@@ -1,0 +1,1 @@
+diskutil unmount force ~/Volumes/sshfs/archaku_home
