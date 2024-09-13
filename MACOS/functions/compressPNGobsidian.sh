@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Assign the first argument to DIR variable
-DIR="/Users/akunito/syncthing/My_Notes/"
+DIR="$1"
 
 # Check if the directory exists
 if [ ! -d "$DIR" ]; then

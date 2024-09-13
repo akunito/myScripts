@@ -31,24 +31,12 @@ BASE_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 #       startupRemote.sh
 #       testing.sh
 
-# Testing variables
-# echo "base path:                       $BASE_PATH"
-# echo "killAPPs path:                   $killAPPs_path"
-# echo "countExternalMonitors path:      $countExternalMonitors_path"
-# echo "startup_InternalMonitor path:    $startup_InternalMonitor_path"
-# echo "startup_ExternalMonitor path:    $startup_ExternalMonitor_path"
 
+# ====================== MAIN PATHS
+SyncthingPATH="~/syncthing"
 
+MyLibraryPATH=$SyncthingPATH/myLibrary
+ObsidianNotesPATH=$SyncthingPATH/myLibrary/MyDocuments
+NetworkPATH=$SyncthingPATH/git_repos/mySCRIPTS/NETWORK.sh
 
-# ===============================================================================
-# ======================================================================= TESTING
-# ===============================================================================
-echo ""
-echo "============================ TESTING ==========================="
-
-# externalMonitorCount=$(bash $countExternalMonitors_path)
-# echo "external monitor count: $externalMonitorCount"
-
-echo ""
-echo "============================ END VARIABLES.sh ==========================="
-echo ""
+# /Users/akunito/syncthing/git_repos/mySCRIPTS/NETWORK.sh

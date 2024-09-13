@@ -1,321 +1,294 @@
 #!/bin/bash
 # Bash Menu Script Example
 
-# include VARIABLES.sh
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
+echo $SELF_PATH
+# Include VARIABLES.sh
 source $SELF_PATH/VARIABLES.sh
+# Include NETWORK.sh
+source $SELF_PATH/../NETWORK.sh
 
-
-main(){
-    # show user menu
+main() {
+    # Main menu
     clear
+    echo "SELF_PATH: $SELF_PATH"
     PS3='Please enter your choice: '
-    options=("Update System" "sshfs" "compress PICS" "virsh manager" "docker menu" "Quit")
-    select opt in "${options[@]}"
-    do
+    options=("Quit" "Update System" "sshfs" "compress PICS" "virsh manager")
+    select opt in "${options[@]}"; do
         case $opt in
-            "Update System")
+            "Quit")
                 clear
-                PS3='Please enter your choice: '
-                options=("ALL Up&Clean" "Quit")
-                select opt in "${options[@]}"
-                do
-                    case $opt in
-                        "ALL Up&Clean")
-                            clear
-                            brew upgrade
-                            brew cleanup
-                            ;;
+                break
+                ;;
 
-                        "Quit")
-                            clear
-                            break
-                            ;;
-                        *) echo "invalid option $REPLY";;
-                    esac
-                done
+            "Update System")
+                update_system
                 ;;
 
             "sshfs")
-                clear
-                PS3='Please enter your choice: '
-                options=("myserver" "agalaptop" "Quit")
-                select opt in "${options[@]}"
-                do
-                    case $opt in
-
-                        "myserver")
-                            clear
-                            PS3='Please enter your choice: '
-                            options=("mount MacBookPro_BACKUPS" "unmount MacBookPro_BACKUPS" "mount Data_4TB" "unmount Data_4TB" "mount server home" "unmount server home" "mount server Machines" "unmount server Machines" "Quit")
-                            select opt in "${options[@]}"
-                            do
-                                case $opt in
-                                    "mount MacBookPro_BACKUPS")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_unmount.sh
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_mount.sh
-                                        ;;
-
-                                    "unmount MacBookPro_BACKUPS")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/Mac_backups_unmount.sh
-                                        ;;
-
-                                    "mount Data_4TB")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_unmount.sh
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_mount.sh
-                                        ;;
-
-                                    "unmount Data_4TB")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Data_4TB_unmount.sh
-                                        ;;
-
-                                    "mount server home")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_unmount.sh
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_mount.sh
-                                        ;;
-
-                                    "unmount server home")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Home_unmount.sh
-                                        ;;
-
-                                    "mount server Machines")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_unmount.sh
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_mount.sh
-                                        ;;
-
-                                    "unmount server Machines")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/server_Machines_unmount.sh
-                                        ;;
-
-                                    "Quit")
-                                        clear
-                                        break
-                                        ;;
-                                    *) echo "invalid option $REPLY";;
-                                esac
-                            done
-                            ;;
-
-                        "agalaptop")
-                            clear
-                            PS3='Please enter your choice: '
-                            options=("mount agalaptop_HOME" "unmount agalaptop_HOME" "Quit")
-                            select opt in "${options[@]}"
-                            do
-                                case $opt in
-                                    "mount agalaptop_HOME")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_unmount.sh
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_mount.sh
-                                        ;;
-
-                                    "unmount agalaptop_HOME")
-                                        clear
-                                        ~/syncthing/git_repos/mySCRIPTS/MACOS/sshfs/agalaptop_HOME_unmount.sh
-                                        ;;
-
-                                    "Quit")
-                                        clear
-                                        break
-                                        ;;
-                                    *) echo "invalid option $REPLY";;
-                                esac
-                            done
-                            ;;
-
-                        "Quit")
-                            clear
-                            break
-                            ;;
-                        *) echo "invalid option $REPLY";;
-                    esac
-                done
+                manage_sshfs
                 ;;
 
             "compress PICS")
-                clear
-                PS3='Please enter your choice: '
-                options=("Obsidian/*.PNG" "Quit")
-                select opt in "${options[@]}"
-                do
-                    case $opt in
-                        "Obsidian/*.PNG")
-                            clear
-                            ~/syncthing/git_repos/mySCRIPTS/MACOS/functions/compressPNGobsidian.sh
-                            ;;
-
-                        "Quit")
-                            clear
-                            break
-                            ;;
-                        *) echo "invalid option $REPLY";;
-                    esac
-                done
+                compress_pics
                 ;;
 
             "virsh manager")
-                clear
-                PS3='Please enter your choice: '
-                options=("Start default network" "Start nm-bridge network" "Quit")
-                select opt in "${options[@]}"
-                do
-                    case $opt in
-                        "Start default network")
-                            clear
-                            virsh net-start default
-                            ;;
-
-                        "Start nm-bridge network")
-                            clear
-                            virsh net-start nm-bridge
-                            sudo ip link add nm-bridge type bridge
-                            sudo ip address ad dev nm-bridge 192.168.0.0/24
-                            sudo ip link set dev nm-bridge up
-                            ;;
-
-                        "Quit")
-                            clear
-                            break
-                            ;;
-                        *) echo "invalid option $REPLY";;
-                    esac
-                done
+                manage_virsh
                 ;;
 
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
 
-            "docker menu")
+update_system() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "ALL Up&Clean")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "ALL Up&Clean")
                 clear
-                PS3='Please enter your choice: '
-                options=("start docker" "log into sql1" "start sql1" "start ubuntu_dev" "save ubuntu_dev status" "remove images" "list images" "list containers" "Quit")
-                select opt in "${options[@]}"
-                do
-                    case $opt in
-                        "start docker")
-                            clear
-                            echo ""
-                            echo "REMEMBER: to create a new image to save the container status, use next command:"
-                            echo "sudo docker commit -p container_id new_container_name"
-                            echo "sudo docker commit -p 524aa76baafb my_ubuntu_20.04_dev2"
-                            echo "more info here https://www.makeuseof.com/run-ubuntu-as-docker-container/"
-                            echo ""
-                            echo "starting docker services..."
-                            sudo systemctl start docker
-                            echo "ready"
-                            ;;
-
-
-                        "log into sql1")
-                            clear
-                            echo ""
-                            echo "running sql server 'sql1'..."
-                            sleep 2
-                            sudo docker exec -it sql1 "bash"
-                            ;;
-
-
-                        "start sql1")
-                            clear
-                            echo ""
-                            echo "running sql server 'sql1'..."
-                            sleep 2
-                            sudo docker start sql1
-                            ;;
-                            
-                            
-                        "start ubuntu_dev")
-                            clear
-                            echo ""
-                            echo "running docker with persisting data directory..."
-                            echo "from: "$DOCKER_SHARE
-                            echo "to:   /data"
-                            echo ""
-                            sleep 2
-                            #command without persistency: sudo docker run -ti --rm ubuntu_dev
-                            # with persistency: sudo docker run -ti --rm -v $DOCKER_SHARE:/data ubuntu_dev
-                            sudo docker run -ti -v $DOCKER_SHARE:/data ubuntu_dev
-                            ;;
-
-                        "save ubuntu_dev status")
-                            clear
-                            echo ""
-                            sudo docker ps
-                            echo ""
-                            echo "Please enter 'container id to be SAVED' "
-                            read container_id
-                            echo "Saving "$container_id" status to ubuntu_dev...."
-                            sudo docker commit -p $container_id ubuntu_dev
-                            echo "loading ..."
-                            sleep 5
-                            echo ""
-                            sudo docker image ls
-                            echo ""
-                            echo "loading ..."
-                            sleep 5
-                            echo "uploading the new image ubuntu_dev to /mnt/Backups_External/docker_backups/"
-                            sudo docker save --output /mnt/Backups_External/docker_backups/ubuntu_dev.tar ubuntu_dev
-                            echo "-------"
-                            echo "if you see an error, copy the last command and run it again"
-                            echo "sudo docker save --output /mnt/Backups_External/docker_backups/ubuntu_dev.tar ubuntu_dev"
-                            echo "----END"
-                            ;;
-                        
-                        "remove images")
-                            clear
-                            echo ""
-                            sudo docker image ls
-                            echo ""
-                            echo "Please enter 'container id to be >> REMOVED <<' "
-                            read container_id
-                            echo "Saving "$container_id" status to ubuntu_dev...."
-                            sudo docker image rm $container_id
-                            echo "removing ..."
-                            sleep 5
-                            echo ""
-                            sudo docker image ls
-                            echo ""
-                            ;;
-
-                        "list images")
-                            clear
-                            sudo docker image ls
-                            ;;
-
-                        "list containers")
-                            clear
-                            sudo docker container ls
-                            echo ""
-                            echo "remember that to start as user in a container you can use:"
-                            echo "sudo docker exec -it container_name_or_id su - user"
-                            echo ""
-                            ;;
-
-                        "Quit")
-                            clear
-                            break
-                            ;;
-                        *) echo "invalid option $REPLY";;
-                    esac
-                done
+                brew upgrade
+                brew cleanup
                 ;;
 
             "Quit")
                 clear
                 break
                 ;;
-            *) echo "invalid option $REPLY";;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
         esac
     done
-
 }
 
-# startup script
+manage_sshfs() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "MOUNT ALL" "mynet" "myserver" "agalaptop")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "MOUNT ALL")
+                mount_all
+                ;;
+
+            "mynet")
+                manage_mynet
+                ;;
+
+            "myserver")
+                manage_myserver
+                ;;
+
+            "agalaptop")
+                manage_agalaptop
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+mount_all() {
+    clear
+    echo "\n=========================================== myNet"
+    echo "==== mount home"
+    $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME"
+
+    echo "\n=========================================== myServer"
+    echo "==== mount home"
+    $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME"
+    echo "==== mount DATA_4TB"
+    $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME"
+    echo "==== mount Machines"
+    $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME"
+
+    echo "\n=========================================== agaLaptop"
+    echo "==== mount home"
+    $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME"
+}
+
+manage_mynet() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "mount mynet_HOME" "unmount mynet_HOME")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "mount mynet_HOME")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME"
+                ;;
+
+            "unmount mynet_HOME")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME"
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+manage_myserver() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "mount MacBookPro_BACKUPS" "unmount MacBookPro_BACKUPS" "mount Data_4TB" "unmount Data_4TB" "mount server home" "unmount server home" "mount server Machines" "unmount server Machines")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "mount MacBookPro_BACKUPS")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "backup" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACAKUBACKUP_ORIGEN" "$server_MACAKUBACKUP_DESTINATION" "$server_MACAKUBACKUP_VOLNAME" "$server_MACAKUBACKUP_ATTACH"
+                ;;
+
+            "unmount MacBookPro_BACKUPS")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "backup" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACAKUBACKUP_ORIGEN" "$server_MACAKUBACKUP_DESTINATION" "$server_MACAKUBACKUP_VOLNAME" "$server_MACAKUBACKUP_ATTACH"
+                ;;
+
+            "mount Data_4TB")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME"
+                ;;
+
+            "unmount Data_4TB")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME"
+                ;;
+
+            "mount server home")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME"
+                ;;
+
+            "unmount server home")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME"
+                ;;
+
+            "mount server Machines")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME"
+                ;;
+
+            "unmount server Machines")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME"
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+manage_agalaptop() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "mount agalaptop_HOME" "unmount agalaptop_HOME")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "mount agalaptop_HOME")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "mount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME"
+                ;;
+
+            "unmount agalaptop_HOME")
+                clear
+                $SELF_PATH/sshfs/SSHFS.sh "unmount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME"
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+compress_pics() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "Obsidian/*.PNG")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "Obsidian/*.PNG")
+                clear
+                $SELF_PATH/functions/compressPNGobsidian.sh $ObsidianNotesPATH
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+manage_virsh() {
+    clear
+    PS3='Please enter your choice: '
+    options=("Quit" "Start default network" "Start nm-bridge network")
+    select opt in "${options[@]}"; do
+        case $opt in
+            "Start default network")
+                clear
+                virsh net-start default
+                ;;
+
+            "Start nm-bridge network")
+                clear
+                virsh net-start nm-bridge
+                sudo ip link add nm-bridge type bridge
+                sudo ip address add dev nm-bridge 192.168.0.0/24
+                sudo ip link set dev nm-bridge up
+                ;;
+
+            "Quit")
+                clear
+                break
+                ;;
+
+            *)
+                echo "Invalid option $REPLY"
+                ;;
+        esac
+    done
+}
+
+# Startup script
 echo "Welcome $HOME"
 main
