@@ -16,12 +16,11 @@ after=1.5
 # sleep $before && skhd -k "ctrl + alt + cmd - 5" && sleep $after
 
 # focus Space 4 and open apps
-# sleep $before && skhd -k "ctrl + alt + cmd - 4" && sleep $after
+sleep $before && skhd -k "ctrl + alt + cmd - 4" && sleep $after
+open -a 'Chromium.app'
 
 # focus Space 3 and open apps
 sleep $before && skhd -k "ctrl + alt + cmd - 3" && sleep $after
-open -a 'Chromium.app'
-open -a 'Spotify.app'
 open ~ # Open HOME on Finder
 
 # focus Space 2 and open apps

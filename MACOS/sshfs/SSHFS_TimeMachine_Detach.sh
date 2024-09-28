@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the location of the sparsebundle (you may need to change this)
-DESTINY="$1"
+DESTINATION="$1"
 ATTACHMENT="$2"
 
 # 1. Check if the sparsebundle is currently in use by Time Machine
@@ -25,9 +25,9 @@ fi
 echo "Sparsebundle successfully unmounted."
 
 # 3. Eject the network volume if necessary (Optional step, for network drives)
-if mount | grep "$DESTINY" >/dev/null; then
+if mount | grep "$DESTINATION" >/dev/null; then
     echo "Ejecting the network volume..."
-    diskutil unmount "$DESTINY"
+    diskutil unmount "$DESTINATION"
 
     if [ $? -ne 0 ]; then
         echo "Failed to eject the network volume."

@@ -12,20 +12,18 @@ main_menu() {
     while true; do
         choice=$(dialog --clear --backtitle "Main Menu" --title "Main Menu" \
                         --menu "Choose an option" 15 50 6 \
-                        1 "Startup Script" \
-                        2 "Update System" \
-                        3 "SSHFS" \
-                        4 "Compress PICS" \
-                        5 "Virsh Manager" \
+                        1 "Update System" \
+                        2 "SSHFS" \
+                        3 "Compress PICS" \
+                        4 "Virsh Manager" \
                         Q "Quit" \
                         3>&1 1>&2 2>&3)
 
         case $choice in
-            1) $SELF_PATH/startup.sh ;;
-            2) $SELF_PATH/menu_Update_System.sh ;;
-            3) $SELF_PATH/menu_SSHFS.sh ;;
-            4) $SELF_PATH/menu_Compress_PICS.sh ;;
-            5) $SELF_PATH/menu_Virsh_Manager.sh ;;
+            1) $SELF_PATH/menu_Update_System.sh ;;
+            2) $SELF_PATH/menu_SSHFS.sh ;;
+            3) $SELF_PATH/menu_Compress_PICS.sh ;;
+            4) $SELF_PATH/menu_Virsh_Manager.sh ;;
             Q|q) clear && exit 0 ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac
@@ -42,13 +40,6 @@ case $1 in
         ;;
     "compress_pics")
         compress_pics
-        ;;
-    "start")
-        $SELF_PATH/startup.sh
-        ;;
-    "yabai_toggle_app_focus")
-        # Pass the app name as argument
-        yabai_toggle_app_focus $2
         ;;
     *)
         # Startup script

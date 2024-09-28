@@ -2,6 +2,7 @@
 
 # ========================
 # IP addresses ===========
+IP_VPN="70.34.255.26"
 IP_LaptopAga_ETH="192.168.8.77"
 IP_LaptopAga_WIFI="192.168.8.78"
 IP_Server_ETH="192.168.8.80"
@@ -20,33 +21,33 @@ IP_NetLab_WIFI="192.168.8.101"
 server_USER="akunito"
 
 server_DATA_4TB_ORIGEN="/mnt/DATA_4TB"
-server_DATA_4TB_DESTINATION="~/Volumes/sshfs/Data_4TB"
+server_DATA_4TB_DESTINATION="/Users/akunito/Volumes/sshfs/Data_4TB"
 server_DATA_4TB_VOLNAME="Data_4TB"
 
 server_HOME_ORIGEN="/home/akunito"
-server_HOME_DESTINATION="~/Volumes/sshfs/archaku_home"
+server_HOME_DESTINATION="/Users/akunito/Volumes/sshfs/archaku_home"
 server_HOME_VOLNAME="archaku_home"
 
 server_MACHINES_ORIGEN="/mnt/Machines"
-server_MACHINES_DESTINATION="~/Volumes/sshfs/server_Machines"
+server_MACHINES_DESTINATION="/Users/akunito/Volumes/sshfs/server_Machines"
 server_MACHINES_VOLNAME="server_Machines"
 
 server_MACAKUBACKUP_ORIGEN="/mnt/DATA_4TB/backups/MacBookPro"
-server_MACAKUBACKUP_DESTINATION="~/Volumes/sshfs/MacBookPro_Backups"
+server_MACAKUBACKUP_DESTINATION="/Users/akunito/Volumes/sshfs/MacBookPro_Backups"
 server_MACAKUBACKUP_VOLNAME="MacBookPro_Backups"
-server_MACAKUBACKUP_ATTACH="~/Volumes/sshfs/MacBookPro_Backups/TimeMachineBackup.sparsebundle"
+server_MACAKUBACKUP_ATTACH="/Users/akunito/Volumes/sshfs/MacBookPro_Backups/TimeMachineBackup.sparsebundle"
 
 # NetLab
 network_USER="akunito"
 
 network_HOME_ORIGEN="/home/akunito"
-network_HOME_DESTINATION="~/Volumes/sshfs/netlab_home"
+network_HOME_DESTINATION="/Users/akunito/Volumes/sshfs/netlab_home"
 network_HOME_VOLNAME="netlab_home"
 
 # Agalaptop
 agalaptop_USER="aga"
 
 agalaptop_HOME_ORIGEN="/home/aga"
-agalaptop_HOME_DESTINATION="~/Volumes/sshfs/agalaptop_home"
+agalaptop_HOME_DESTINATION="/Users/akunito/Volumes/sshfs/agalaptop_home"
 agalaptop_HOME_VOLNAME="agalaptop_home"
 

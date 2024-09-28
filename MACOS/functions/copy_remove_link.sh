@@ -4,11 +4,11 @@ ELEMENT=".ssh"
 
 ORIGEN="~/"
 
-DESTINY="~/syncthing/MacBook14ProM3/akunito/"
+DESTINATION="~/syncthing/MacBook14ProM3/akunito/"
 
-cp -R $ORIGEN$ELEMENT $DESTINY
+cp -R $ORIGEN$ELEMENT $DESTINATION
 # rm -R $ORIGEN$ELEMENT
-# ln -sf $DESTINY$ELEMENT $ORIGEN
+# ln -sf $DESTINATION$ELEMENT $ORIGEN
 
 
 # this script isnot working yet
