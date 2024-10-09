@@ -1,1 +1,0 @@
-diskutil unmount force ~/Volumes/sshfs/Data_4TB

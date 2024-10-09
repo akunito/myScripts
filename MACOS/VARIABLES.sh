@@ -38,3 +38,7 @@ MYSCRIPTS_PATH="$SYNCTHING_PATH/git_repos/mySCRIPTS"
       KILLAPPS_SH="$MYSCRIPTS_PATH/MACOS/startupSource/killAPPs.sh"
       STARTUP_EXTMONITOR_SH="$MYSCRIPTS_PATH/MACOS/startupSource/startup_ExternalMonitor.sh"
       STARTUP_INTMONITOR_SH="$MYSCRIPTS_PATH/MACOS/startupSource/startup_InternalMonitor.sh"
+
+# /.config
+  YABAIRC_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabairc"
+  YAI_FUNCTIONS_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabai_functions.sh"

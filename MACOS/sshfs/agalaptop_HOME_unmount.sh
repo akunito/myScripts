@@ -1,1 +1,0 @@
-diskutil unmount force ~/Volumes/sshfs/agalaptop_home
