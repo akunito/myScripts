@@ -26,18 +26,6 @@ source_variables() {
     echo "startup_ExternalMonitor path:    $STARTUP_EXTMONITOR_SH"
 }
 
-set_window_rules() {
-    echo "set_window_rules"
-    # set the window rules
-    # if Kitty is not sticky, make it.
-    if [[ "$(yabai -m query --windows | jq '.[] | select(.app == "kitty") | .["is-sticky"] // false')" == "false" ]]; then
-        yabai -m window --toggle sticky
-    fi
-    if [[ "$(yabai -m query --windows | jq '.[] | select(.app == "kitty") | .["is-floating"] // false')" == "false" ]]; then
-        yabai -m window --toggle float
-    fi
-}
-
 handle_services() {
     launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist
     sleep 0.5
@@ -50,7 +38,6 @@ handle_services() {
             echo "$service is not running"
             "$service" --start-service
         fi
-        set_window_rules
         sleep 0.5
     done
     sleep 2
@@ -130,3 +117,12 @@ if [ "$startupSwitch" = "1" ]; then
     fi
 fi
 
+output_message "6. BACKUPS"
+resultQuit=$(prompt_user "6. View Backups menu?")
+
+if [ "$resultQuit" == "button returned:Yes" ]; then
+    echo "The user selected Yes."
+    bash "$SELF_PATH/menu_backups.sh"
+else
+    echo "The user selected No."
+fi

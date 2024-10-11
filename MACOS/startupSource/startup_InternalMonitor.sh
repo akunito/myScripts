@@ -7,26 +7,6 @@
 before=2
 after=1.5
 
-
-set_spaces_singleMonitor() {
-    echo "set_spaces"
-    
-    # Bind Spaces to Display 1
-    for i in {1..12}; do
-        yabai -m space "$i" --display 1
-    done
-
-    # set the window rules
-    yabai -m rule --add app="^Obsidian$" space=1
-    yabai -m rule --add app="^Vivaldi$" space=2
-}
-
-set_windows_singleMonitors() {
-    echo "set_windows"
-    # set Kitty Grid
-    yabai -m window $(yabai -m query --windows | jq ".[] | select(.app == \"kitty\").id") --grid 10:10:5:1:5:8
-}
-
 call_apps() {
     echo "call_apps"
     # focus Space 8 and open apps
@@ -62,6 +42,6 @@ call_apps() {
     skhd -k "ctrl + alt + cmd - 1"
 }
 
-set_spaces_singleMonitor
-set_windows_singleMonitors
+$YABAI_FUNCTIONS_PATH "set_spaces_singleMonitor"
+$YABAI_FUNCTIONS_PATH "set_windows_singleMonitors"
 call_apps

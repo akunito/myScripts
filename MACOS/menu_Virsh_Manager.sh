@@ -14,7 +14,7 @@ virsh_manager_menu() {
                         --menu "Choose an option" 15 60 4 \
                         1 "Start default network" \
                         2 "Start nm-bridge network" \
-                        Q "Quit" \
+                        Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
         case $choice in

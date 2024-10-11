@@ -13,7 +13,7 @@ compress_pics_menu() {
         choice=$(dialog --clear --backtitle "$MENU_PATH" --title "Compress PICS" \
                         --menu "Choose an option" 15 50 3 \
                         1 "Obsidian/*.PNG" \
-                        Q "Quit" \
+                        Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
         case $choice in

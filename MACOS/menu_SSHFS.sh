@@ -3,6 +3,7 @@
 # Path to the functions file
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 source $SELF_PATH/menu_functions.sh
+source $NETWORK_PATH
 
 MENU_PATH="Main Menu > SSHFS"
 
@@ -16,7 +17,7 @@ sshfs_menu() {
                         2 "mynet" \
                         3 "myserver" \
                         4 "agalaptop" \
-                        Q "Quit" \
+                        Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
         case $choice in
@@ -43,8 +44,8 @@ mynet_menu() {
                         3>&1 1>&2 2>&3)
 
         case $choice in
-            1) $SSHFS_SH "mount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME" ;;
-            2) $SSHFS_SH "unmount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME" ;;
+            1) eval $network_HOME_MOUNT ;;
+            2) eval $network_HOME_UNMOUNT ;;
             Q|q) MENU_PATH="Main Menu > SSHFS" && return ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac
@@ -70,14 +71,14 @@ myserver_menu() {
                         3>&1 1>&2 2>&3)
 
         case $choice in
-            1) $SSHFS_SH "mount" "backup" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACAKUBACKUP_ORIGEN" "$server_MACAKUBACKUP_DESTINATION" "$server_MACAKUBACKUP_VOLNAME" "$server_MACAKUBACKUP_ATTACH" ;;
-            2) $SSHFS_SH "unmount" "backup" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACAKUBACKUP_ORIGEN" "$server_MACAKUBACKUP_DESTINATION" "$server_MACAKUBACKUP_VOLNAME" "$server_MACAKUBACKUP_ATTACH" ;;
-            3) $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME" ;;
-            4) $SSHFS_SH "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME" ;;
-            5) $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME" ;;
-            6) $SSHFS_SH "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME" ;;
-            7) $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME" ;;
-            8) $SSHFS_SH "unmount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME" ;;
+            1) eval $server_MACAKUBACKUP_MOUNT ;;
+            2) eval $server_MACAKUBACKUP_UNMOUNT ;;
+            3) eval $server_DATA_4TB_MOUNT ;;
+            4) eval $server_DATA_4TB_UNMOUNT ;;
+            5) eval $server_HOME_MOUNT ;;
+            6) eval $server_HOME_UNMOUNT ;;
+            7) eval $server_MACHINES_MOUNT ;;
+            8) eval $server_MACHINES_UNMOUNT ;;
             Q|q) MENU_PATH="Main Menu > SSHFS" && return ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac
@@ -97,8 +98,8 @@ agalaptop_menu() {
                         3>&1 1>&2 2>&3)
 
         case $choice in
-            1) $SSHFS_SH "mount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME" ;;
-            2) $SSHFS_SH "unmount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME" ;;
+            1) eval $agalaptop_HOME_MOUNT ;;
+            2) eval $agalaptop_HOME_UNMOUNT ;;
             Q|q) MENU_PATH="Main Menu > SSHFS" && return ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac

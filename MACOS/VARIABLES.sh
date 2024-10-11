@@ -25,12 +25,15 @@ MYSCRIPTS_PATH="$SYNCTHING_PATH/git_repos/mySCRIPTS"
     # /audioControl
       # microphone.sh
     # /functions
+      TIMEOUT_SH="$MYSCRIPTS_PATH/MACOS/functions/timeout.sh"
     # /powerControl
       # lock_screen.sh
       # powerControlMenu.sh
       # reboot.sh
       # shutdown.sh
       # sleep.sh
+    # /ssh
+      SSH_STARTER_SH=$MYSCRIPTS_PATH/MACOS/ssh/ssh_starter.sh
     # /sshfs
       SSHFS_SH=$MYSCRIPTS_PATH/MACOS/sshfs/SSHFS.sh
     # /startupSource
@@ -41,4 +44,4 @@ MYSCRIPTS_PATH="$SYNCTHING_PATH/git_repos/mySCRIPTS"
 
 # /.config
   YABAIRC_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabairc"
-  YAI_FUNCTIONS_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabai_functions.sh"
+  YABAI_FUNCTIONS_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabai_functions.sh"

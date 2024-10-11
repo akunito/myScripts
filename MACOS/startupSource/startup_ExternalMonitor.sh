@@ -7,37 +7,6 @@
 before=2.5
 after=1.5
 
-set_spaces_externalMonitors() {
-    echo "set_spaces"
-    
-    # Bind Spaces to Display 1
-    for i in {1..6}; do
-        yabai -m space "$i" --display 1
-    done
-
-    # Bind Spaces to Display 2
-    for i in {7..9}; do
-        yabai -m space "$i" --display 2
-    done
-
-    # Bind Spaces to Display 3
-    for i in {10..12}; do
-        yabai -m space "$i" --display 3
-    done
-
-    # set the window rules
-    # yabai -m rule --add app="^Obsidian$" display=2 # ????????? TODO
-    yabai -m rule --add app="^Vivaldi$" space=1
-}
-
-set_windows_externalMonitors() {
-    echo "set_windows"
-    # set Kitty Grid
-    yabai -m window $(yabai -m query --windows | jq ".[] | select(.app == \"kitty\").id") --grid 20:20:10:1:10:16
-    # set qBittorrent Grid
-    # yabai -m window $(yabai -m query --windows | jq ".[] | select(.app == \"qBittorrent\").id") --grid 10:10:5:0:5:5
-}
-
 call_apps() {
     echo "call_apps"
     # focus Space 8 and open apps
@@ -72,7 +41,7 @@ call_apps() {
     open -a 'obsidian.app'
 }
 
-set_spaces_externalMonitors
-set_windows_externalMonitors
+$YABAI_FUNCTIONS_PATH "set_spaces_externalMonitors"
+$YABAI_FUNCTIONS_PATH "set_windows_externalMonitors"
 call_apps
 

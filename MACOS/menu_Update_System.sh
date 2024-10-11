@@ -13,7 +13,7 @@ update_system_menu() {
         choice=$(dialog --clear --backtitle "$MENU_PATH" --title "Update System" \
                         --menu "Choose an option" 15 50 3 \
                         1 "ALL Up&Clean" \
-                        Q "Quit" \
+                        Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
         case $choice in

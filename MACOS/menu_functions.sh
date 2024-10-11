@@ -65,3 +65,4 @@ compress_pics() {
         show_dialog_message msgbox "Error compressing pictures"
     fi
 }
+
