@@ -5,6 +5,7 @@ source $VARIABLES_PATH
 source $NETWORK_PATH
 
 # ============================== Associated ARRAYs for each SERVER ======================
+# ============================================================================================ WORK IN PROGRESS make variable more dynamic
 VPN_COMMANDS=("${VPN_SERVER[SSH][@]}")
 
 LAPTOP_AGA_COMMANDS=(

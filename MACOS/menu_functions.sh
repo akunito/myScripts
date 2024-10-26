@@ -44,13 +44,51 @@ update_brew() {
     fi
 }
 
+ssh_interactive_command() {
+    local ssh_connection="${1}"
+    local command="$2"
+
+    # Concatenate `ssh_connection` with `-t` and the command
+    local ssh_message="${ssh_connection} -t '${command}'
+
+    echo -e \"\n\033[1;32mTask completed!\033[0m\";
+    echo -e \"\033[1;33mThe SSH session will close in 10 seconds. Press any key to leave now...\033[0m\";
+
+    if ! read -t 10 -n 1; then
+        exit
+    fi
+    exec \$SHELL -l
+    '"
+
+    # Execute the SSH command
+    eval "${ssh_message}"
+}
+update_nixos() {
+    # echo "ssh_connection = $1"
+    # echo "username = $2"
+    # echo "flake_alias = $3"
+    # echo "description = $4"
+    local ssh_connection="$1"
+    local username="$2"
+    local flake_alias="$3"
+    local description="$4"
+
+    echo "Updating the $description system..."
+
+    ssh_interactive_command "$ssh_connection" "sh /home/$username/.dotfiles/install.sh /home/$username/.dotfiles $flake_alias -s"
+    
+    # wait key from user to leave the dialog
+    read -n 1 -s -r -p "Press any key to continue..."
+}
+
 mount_all() {
     show_dialog_message infobox "Mounting all..." 5
-    if $SSHFS_SH "mount" "normal" "$network_USER" "$IP_NetLab_ETH" "$IP_NetLab_WIFI" "22" "$network_HOME_ORIGEN" "$network_HOME_DESTINATION" "$network_HOME_VOLNAME" &&
-       $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_HOME_ORIGEN" "$server_HOME_DESTINATION" "$server_HOME_VOLNAME" &&
-       $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_DATA_4TB_ORIGEN" "$server_DATA_4TB_DESTINATION" "$server_DATA_4TB_VOLNAME" &&
-       $SSHFS_SH "mount" "normal" "$server_USER" "$IP_Server_ETH" "$IP_Server_WIFI" "22" "$server_MACHINES_ORIGEN" "$server_MACHINES_DESTINATION" "$server_MACHINES_VOLNAME" &&
-       $SSHFS_SH "mount" "normal" "$agalaptop_USER" "$IP_LaptopAga_WIFI" "$IP_LaptopAga_ETH" "22" "$agalaptop_HOME_ORIGEN" "$agalaptop_HOME_DESTINATION" "$agalaptop_HOME_VOLNAME"; then
+    if $network_HOME_MOUNT &&
+       $server_HOME_MOUNT &&
+       $server_DATA_4TB_MOUNT &&
+       $server_MACHINES_MOUNT &&
+       $agalaptop_HOME_MOUNT
+       ; then
         show_dialog_message msgbox "Mounting complete"
     else
         show_dialog_message msgbox "Error mounting"

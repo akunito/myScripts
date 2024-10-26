@@ -4,8 +4,16 @@
 # ============================== IP addresses ===========================================
 # ================== Server VPN
 VPN_USER="root"
-IP_VPN="70.34.255.26"
-SSH_VPN="ssh -p 22 $VPN_USER@$IP_VPN"
+IP_VPN_INT="172.26.3.155"
+IP_VPN_EXT="64.176.68.205"
+SSH_VPN_INT="ssh -p 22 $VPN_USER@$IP_VPN_INT"
+SSH_VPN_EXT="ssh -p 22 $VPN_USER@$IP_VPN_EXT"
+# ================== My Router Flint
+router_USER="root"
+IP_RouterLAN="192.168.8.1"
+IP_RouterWG="172.26.5.1"
+SSH_RouterLAN="ssh -p 22 $router_USER@$IP_RouterLAN"
+SSH_RouterWG="ssh -p 22 $router_USER@$IP_RouterWG"
 # ================== Laptop Aga
 agalaptop_USER="aga"
 IP_LaptopAga_ETH="192.168.8.77"
@@ -19,7 +27,7 @@ IP_Server_WIFI="192.168.8.81"
 SSH_Server="ssh -p 22 $server_USER@$IP_Server_ETH"
 SSH_Server_2="ssh -p 22 $server_USER@$IP_Server_WIFI"
 SSH_Server_BOOT="ssh -p 22 root@$IP_Server_ETH"
-# ================== Server Lab
+# ================== NetwServer NetLab
 network_USER="akunito"
 IP_NetLab_ETH="192.168.8.100"
 IP_NetLab_WIFI="192.168.8.101"
@@ -33,6 +41,8 @@ IP_MacAku_WIFI="192.168.8.91"
 IP_PhoneAku="192.168.8.95"
 # ================== Work Laptop
 IP_WorkLaptopAku_ETH="192.168.8.97"
+# ================== Aga Phone
+IP_PhoneAga="192.168.8.75"
 
 
 # =======================================================================================
@@ -44,6 +54,15 @@ agalaptop_HOME_DESTINATION="/Users/akunito/Volumes/sshfs/agalaptop_home"
 agalaptop_HOME_VOLNAME="agalaptop_home"
 agalaptop_HOME_MOUNT="$SSHFS_SH mount normal $agalaptop_USER $IP_LaptopAga_WIFI $IP_LaptopAga_ETH 22 $agalaptop_HOME_ORIGEN $agalaptop_HOME_DESTINATION $agalaptop_HOME_VOLNAME"
 agalaptop_HOME_UNMOUNT="$SSHFS_SH unmount normal $agalaptop_USER $IP_LaptopAga_WIFI $IP_LaptopAga_ETH 22 $agalaptop_HOME_ORIGEN $agalaptop_HOME_DESTINATION $agalaptop_HOME_VOLNAME"
+
+
+# ================== My Router Flint
+# drive FS
+router_FS_ORIGEN="/"
+router_FS_DESTINATION="/Users/akunito/Volumes/sshfs/routerFS"
+router_FS_VOLNAME="routerFS"
+router_FS_MOUNT="$SSHFS_SH mount normal $router_USER $IP_RouterLAN $IP_RouterWG 22 $router_FS_ORIGEN $router_FS_DESTINATION $router_FS_VOLNAME"
+router_FS_UNMOUNT="$SSHFS_SH unmount normal $router_USER $IP_RouterLAN $IP_RouterWG 22 $router_FS_ORIGEN $router_Fs_DESTINATION $router_FS_VOLNAME"
 
 # ================== Server HomeLab
 # drive DATA_4TB
