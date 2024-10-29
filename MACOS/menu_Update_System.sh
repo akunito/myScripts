@@ -21,7 +21,7 @@ update_system_menu() {
         case $choice in
             1) update_brew ;;
             2) update_nixos "$SSH_Server" "akunito" "HOME" "HomeLab" ;; # SSH Connection Variable | username | Flake Alias | Description
-            3) update_nixos "$SSH_LaptopAga" aga AGA AgaLaptop ;;
+            3) update_nixos "$SSH_LaptopAga" "aga" "AGA" "AgaLaptop" ;;
             Q|q) exit 0 ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac

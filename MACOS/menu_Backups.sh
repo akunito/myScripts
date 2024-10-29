@@ -23,7 +23,7 @@ backup_menu() {
         case $choice in
             1)
                 show_dialog_message infobox "Backing up Syncthing Directory..." 5
-                rclone sync /Users/akunito/syncthing/ pcloudCrypt:/SYNC_SAFE/Syncthing
+                sudo rclone sync /Users/akunito/syncthing/ pcloudCrypt:/SYNC_SAFE/Syncthing
                 ;;
             2)
                 show_dialog_message infobox "Backing up Bitwarden..." 5

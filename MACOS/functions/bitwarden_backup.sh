@@ -16,9 +16,20 @@ bitwarden_backup() {
       exit 1
   fi
 
-  # Prompt the user for the encryption key
-  read -sp "Enter encryption key: " ENCRYPT_KEY
-  echo ""
+  # Prompt the user for the encryption key, checking for a match
+  while true; do
+      read -sp "Enter encryption key: " ENCRYPT_KEY_1
+      echo ""
+      read -sp "Confirm encryption key: " ENCRYPT_KEY_2
+      echo ""
+      
+      if [[ "$ENCRYPT_KEY_1" == "$ENCRYPT_KEY_2" ]]; then
+          ENCRYPT_KEY="$ENCRYPT_KEY_1"
+          break
+      else
+          echo "Error: The encryption keys do not match. Please try again."
+      fi
+  done
 
   # Export vault data using BW_SESSION
   bw sync --session $BW_SESSION  # Optional: sync vault to ensure latest data
