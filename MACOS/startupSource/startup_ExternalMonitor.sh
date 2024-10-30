@@ -1,44 +1,32 @@
 #!/bin/bash
 
-# # include VARIABLES.sh
-# source $VARIABLES_PATH
-# echo "sourcing $VARIABLES_PATH"
-
 before=2.5
 after=1.5
 
+# Function to manage space and execute command
+manage_space_and_run() {
+    local space_number=$1
+    local command=$2
+
+    sleep $before && $YABAI_FUNCTIONS_PATH "space_management" $space_number && sleep $after
+    if [ -n "$command" ]; then
+        eval "$command"
+    fi
+}
+
 call_apps() {
     echo "call_apps"
-    # focus Space 8 and open apps
-    # sleep $before && skhd -k "ctrl + alt + cmd - 8" && sleep $after
 
-    # focus Space 7 and open apps
-    # sleep $before && skhd -k "ctrl + alt + cmd - 7" && sleep $after
-
-    # focus Space 6 and open apps
-    # sleep $before && skhd -k "ctrl + alt + cmd - 6" && sleep $after
-
-    # focus Space 5 and open apps
-    sleep $before && skhd -k "ctrl + alt + cmd - 5" && sleep $after
-    open -a 'Chromium.app'
-
-    # focus Space 4 and open apps
-    sleep $before && skhd -k "ctrl + alt + cmd - 4" && sleep $after
-    code /Users/akunito/Volumes/sshfs/archaku_home
-
-    # focus Space 3 and open apps
-    sleep $before && skhd -k "ctrl + alt + cmd - 3" && sleep $after
-    code /Users/akunito/syncthing/git_repos/myProjects/KeyboardProjects/spinachShortcuts
-
-    # focus Space 2 and open apps
-    sleep $before && skhd -k "ctrl + alt + cmd - 2" && sleep $after
-    code /Users/akunito/syncthing
-
-    # focus Space 1 and open apps
-    sleep $before && skhd -k "ctrl + alt + cmd - 1" && sleep $after
-    open ~ # Open HOME on Finder
-    open -a 'vivaldi.app'
-    open -a 'obsidian.app'
+    manage_space_and_run 10 'open -a "obsidian.app"'
+    # manage_space_and_run 9
+    # manage_space_and_run 8
+    # manage_space_and_run 7
+    # manage_space_and_run 6
+    # manage_space_and_run 5 'open -a "Chromium.app"'
+    # manage_space_and_run 4
+    manage_space_and_run 3
+    manage_space_and_run 2 "cursor"
+    manage_space_and_run 1 'open ~ && open -a "vivaldi.app"'
 }
 
 $YABAI_FUNCTIONS_PATH "set_spaces_externalMonitors"
