@@ -16,7 +16,8 @@ backup_menu() {
         choice=$(dialog --clear --backtitle "Backups" --title "Backups Menu" \
                         --menu "Choose an option" 15 50 3 \
                         1 "Backup Syncthing Directory" \
-                        2 "Backup Bitwarden" \
+                        2 "Update Home Symlinks" \
+                        3 "Backup Bitwarden" \
                         Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
@@ -26,6 +27,10 @@ backup_menu() {
                 sudo rclone sync /Users/akunito/syncthing/ pcloudCrypt:/SYNC_SAFE/Syncthing
                 ;;
             2)
+                show_dialog_message infobox "Updating Home Symlinks..." 5
+                $SELF_PATH/functions/Home_Symlinks_Gen.sh
+                ;;
+            3)
                 show_dialog_message infobox "Backing up Bitwarden..." 5
                 $SELF_PATH/functions/bitwarden_backup.sh
                 ;;

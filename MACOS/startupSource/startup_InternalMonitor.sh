@@ -21,7 +21,7 @@ call_apps() {
     # manage_space_and_run 7 'open -a "Chromium.app"'
     # manage_space_and_run 6
     manage_space_and_run 5 'open ~'
-    manage_space_and_run 4
+    # manage_space_and_run 4
     manage_space_and_run 3 "cursor"
     manage_space_and_run 2 'open -a "vivaldi.app"'
     manage_space_and_run 1 'open -a "obsidian.app"'
