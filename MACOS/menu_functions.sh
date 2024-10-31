@@ -21,6 +21,10 @@ source $SELF_PATH/VARIABLES.sh
 # Include NETWORK.sh
 source $SELF_PATH/../NETWORK.sh
 
+wait_for_user_input() {
+    read -n 1 -s -r -p "Press any key to continue..."
+}
+
 show_dialog_message() {
     local type="$1"
     local message="$2"
@@ -48,38 +52,68 @@ ssh_interactive_command() {
     local ssh_connection="${1}"
     local command="$2"
 
-    # Concatenate `ssh_connection` with `-t` and the command
-    local ssh_message="${ssh_connection} -t '${command}'
+    # The -A flag enables SSH agent forwarding, which allows the remote server to use your local SSH keys for authentication. 
+    # This should resolve the "Host key verification failed" error when trying to clone Git repositories over SSH from the remote server.
+    # Make sure that:
+    # - Your SSH agent is running locally (ssh-agent)
+    # - Your SSH key is added to the agent (ssh-add)
+    # - The SSH config on your local machine allows agent forwarding for the remote host
+    # You can also add this to your ~/.ssh/config file for the specific host like:
+    #   Host your-remote-host
+    #       ForwardAgent yes
+
+    local ssh_message="${ssh_connection} -A -t '${command}'
 
     echo -e \"\n\033[1;32mTask completed!\033[0m\";
-    echo -e \"\033[1;33mThe SSH session will close in 10 seconds. Press any key to leave now...\033[0m\";
-
-    if ! read -t 10 -n 1; then
-        exit
-    fi
     exec \$SHELL -l
     '"
 
     # Execute the SSH command
     eval "${ssh_message}"
 }
+
+get_system_password() {
+    local system_name="$1"
+    local keychain_name="NixOS_Systems"
+    
+    # Try to get password from keychain
+    password=$(security find-generic-password -a "$system_name" -s "$keychain_name" -w 2>/dev/null)
+    
+    # If password doesn't exist, prompt user to add it
+    if [ -z "$password" ]; then
+        password=$(dialog --clear --insecure --passwordbox "Enter sudo password for $system_name:" 8 50 3>&1 1>&2 2>&3)
+        if [ $? -eq 0 ]; then
+            # Store password in keychain
+            security add-generic-password -a "$system_name" -s "$keychain_name" -w "$password"
+        else
+            return 1
+        fi
+    fi
+    echo "$password"
+}
+
 update_nixos() {
-    # echo "ssh_connection = $1"
-    # echo "username = $2"
-    # echo "flake_alias = $3"
-    # echo "description = $4"
     local ssh_connection="$1"
     local username="$2"
     local flake_alias="$3"
     local description="$4"
 
     echo "Updating the $description system..."
-
-    ssh_interactive_command "$ssh_connection" "sh /home/$username/.dotfiles/install.sh /home/$username/.dotfiles $flake_alias -s"
     
-    # wait key from user to leave the dialog
-    read -n 1 -s -r -p "Press any key to continue..."
+    # Get password from keychain
+    local password=$(get_system_password "$description")
+    if [ $? -ne 0 ]; then
+        show_dialog_message msgbox "Password operation cancelled"
+        return 1
+    fi
+    # TEST
+    echo "$password" | ssh_interactive_command "$ssh_connection" "ssh-add -l && ssh -vT git@github.com"
+    
+    # Use password in the SSH command
+    echo "$password" | ssh_interactive_command "$ssh_connection" "/home/$username/.dotfiles/install.sh /home/$username/.dotfiles $flake_alias"
 }
+# TEST
+update_nixos "$SSH_Server" "akunito" "HOME" "HomeLab"
 
 mount_all() {
     show_dialog_message infobox "Mounting all..." 5
@@ -87,8 +121,7 @@ mount_all() {
        $server_HOME_MOUNT &&
        $server_DATA_4TB_MOUNT &&
        $server_MACHINES_MOUNT &&
-       $agalaptop_HOME_MOUNT
-       ; then
+       $agalaptop_HOME_MOUNT; then
         show_dialog_message msgbox "Mounting complete"
     else
         show_dialog_message msgbox "Error mounting"

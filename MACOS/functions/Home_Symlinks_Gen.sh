@@ -19,6 +19,15 @@ EXCLUDE=(
     "$HOME/syncthing" 
     "$HOME/Volumes" 
     "$HOME/.Trash"
+    "$HOME/.tmux"
+    "$HOME/.tmux.conf"
+)
+
+# Files that were Excluded and need to be backed up to $DESTINATION
+files_to_backup=(
+    "$HOME/Library" 
+    "$HOME/.tmux"
+    "$HOME/.tmux.conf"
 )
 
 # Array of elements to ignore when creating symlinks
@@ -162,6 +171,16 @@ cleanup_broken_symlinks() {
     done
 }
 
+# Function to backup specified files
+backup_files() {
+    echo -e "\nBacking up specified files..."
+    for file in "${files_to_backup[@]}"; do
+        cp -r "$file" "$DESTINATION"
+        echo "Backed up: $file"
+    done
+    echo -e "\nBackup complete."
+}
+
 # ======================================================================== MAIN EXECUTION FLOW
 
 echo -e "\nStarting synchronization script..."
@@ -186,3 +205,6 @@ create_symlinks
 
 # Remove broken symlinks in $HOME
 cleanup_broken_symlinks
+
+# backup given files in $files_to_backup to $DESTINATION
+backup_files
