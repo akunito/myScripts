@@ -25,7 +25,7 @@ EXCLUDE=(
 
 # Files that were Excluded and need to be backed up to $DESTINATION
 files_to_backup=(
-    "$HOME/Library" 
+    # Dont backup "Library"
     "$HOME/.tmux"
     "$HOME/.tmux.conf"
 )
@@ -208,3 +208,5 @@ cleanup_broken_symlinks
 
 # backup given files in $files_to_backup to $DESTINATION
 backup_files
+
+wait_for_user_input
