@@ -22,6 +22,7 @@ source $SELF_PATH/VARIABLES.sh
 source $SELF_PATH/../NETWORK.sh
 
 wait_for_user_input() {
+    echo ""
     read -n 1 -s -r -p "Press any key to continue..."
 }
 
@@ -45,6 +46,15 @@ create_file() {
     local directory=$(dirname "$file_path")
     mkdir -p "$directory"
     touch "$file_path"
+}
+
+sync_directory_to_backup_efficiently() {
+    local source_path="$1"
+    local destination_path="$2"
+    # Print the colored message to stderr so it doesn't affect the return value
+    echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
+    # Return only the clean command string to stdout
+    printf "%s" "rsync -ahp --delete --progress \"$source_path/\" \"$destination_path/\""
 }
 
 # Function to check if log file exceeds 1MB and rotate it
@@ -171,7 +181,10 @@ ssh_interactive_command() {
     local ssh_connection="${1}"
     local command="$2"
 
-    local ssh_message="${ssh_connection} -t '${command}
+    local ssh_message="${ssh_connection} -t '
+    touch \"maintenance.log\";
+
+    ${command} | tee -a \"maintenance.log\";
 
     echo -e \"\n\033[1;32mTask completed!\033[0m\";
     echo -e \"\033[1;33mThe SSH session will close in 8 seconds. Press ENTER to stay connected...\033[0m\";

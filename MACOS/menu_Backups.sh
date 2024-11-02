@@ -23,17 +23,14 @@ backup_menu() {
 
         case $choice in
             1)
-                show_dialog_message msgbox "Backing up Syncthing Directory (excluding git_repos and Sync_Everywhere)..."
                 sudo rclone sync --links --exclude "git_repos/**" --exclude "Sync_Everywhere/**" /Users/akunito/syncthing/ pcloudCrypt:/SYNC_SAFE/Syncthing -P
                 wait_for_user_input
                 ;;
             2)
-                show_dialog_message msgbox "Updating Home Symlinks..."
                 $SELF_PATH/functions/Home_Symlinks_Gen.sh
                 wait_for_user_input
                 ;;
             3)
-                show_dialog_message msgbox "Backing up Bitwarden..."
                 $SELF_PATH/functions/bitwarden_backup.sh
                 wait_for_user_input
                 ;;
