@@ -3,6 +3,7 @@
 # Path to the functions file
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 source $SELF_PATH/menu_functions.sh
+source $SELF_PATH/menu_Backups.sh
 
 MENU_PATH="Main Menu > Update System"
 
@@ -14,17 +15,10 @@ perform_update() {
             update_brew
             ;;
         "homelab")
-            # Update NixOS
             update_nixos "$SSH_Server" "akunito" "HOME" "HomeLab"
-            # Sync home directory to DATA_4TB/backups
-            command=$(sync_directory_to_backup_efficiently "/home/akunito" "/mnt/DATA_4TB/backups/NixOS_homelab_home")
-            ssh_command "$SSH_Server" "HomeLab" "$command"
             ;;
         "agalaptop")
             update_nixos "$SSH_LaptopAga" "aga" "AGA" "AgaLaptop"
-            # Sync home directory to BACKUPS/home
-            command=$(sync_directory_to_backup_efficiently "/home/aga" "/home/aga/BACKUPS/home")
-            ssh_command "$SSH_LaptopAga" "AgaLaptop" "$command"
             ;;
         "all")
             perform_update "brew"

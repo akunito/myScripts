@@ -49,12 +49,27 @@ create_file() {
 }
 
 sync_directory_to_backup_efficiently() {
+    # Usage: sync_directory_to_backup_efficiently "/home/akunito/" "/mnt/DATA_4TB/backups/NixOS_homelab_home/" "EXCLUDEcontentOfDIR1/** EXCLUDEfullDIR2"
     local source_path="$1"
     local destination_path="$2"
+    local exclude_paths="$3"
     # Print the colored message to stderr so it doesn't affect the return value
     echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
-    # Return only the clean command string to stdout
-    printf "%s" "rsync -ahp --delete --progress \"$source_path/\" \"$destination_path/\""
+    
+    local cmd="rsync -ahp --delete-excluded --delete --progress"
+    
+    # If exclude_paths is not empty, add each exclude path
+    if [ -n "$exclude_paths" ]; then
+        # Split exclude_paths on spaces and add each as --exclude
+        for path in $exclude_paths; do
+            cmd="$cmd --exclude \"$path\""
+        done
+    fi
+    
+    # Add source and destination paths
+    cmd="$cmd \"$source_path\" \"$destination_path\""
+    
+    printf "%s" "$cmd"
 }
 
 # Function to check if log file exceeds 1MB and rotate it
@@ -255,7 +270,7 @@ EOF
     # Replace sudo with $SUDO_CMD in $command
     command=$(echo "$command" | sed "s/sudo/$SUDO_CMD/g")
 
-    echo "Updating the $system_name system..."
+    echo -e "\nUpdating the $system_name system..."
     ssh_interactive_command "$ssh_connection" "$command"
     wait_for_user_input
 }
