@@ -53,10 +53,13 @@ sync_directory_to_backup_efficiently() {
     local source_path="$1"
     local destination_path="$2"
     local exclude_paths="$3"
+    
+    sleep 2
     # Print the colored message to stderr so it doesn't affect the return value
     echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
     
-    local cmd="rsync -ahp --delete-excluded --delete --progress"
+    # local cmd="rsync -avh --delete --links --progress --exclude \".DS_Store\" --exclude \"*/.DS_Store\""
+    local cmd="rclone sync --links -P --exclude \".DS_Store\" --exclude \"*/.DS_Store\""
     
     # If exclude_paths is not empty, add each exclude path
     if [ -n "$exclude_paths" ]; then

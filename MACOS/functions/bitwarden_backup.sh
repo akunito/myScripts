@@ -5,9 +5,9 @@ source $VARIABLES_PATH
 
 bitwarden_backup() {
   # Variables
-  export BW_SESSION="vFKUhT8iN8HCcQE2+X3zY/fhPP0eVOSkN1VOYWT+3ploeTEsZZlJwfAKwuvXgn2JfiwyOvmtVgQszmbme6yMVQ=="
+  export BW_SESSION=$(bw unlock --raw)
   BACKUP_PATH="$SYNCTHING_PATH/myLibrary/MySecurity/Bitwarden"
-  PCLOUD_PATH="/SYNC_SAFE/Syncthing/myLibrary/MySecurity/Bitwarden"
+  PCLOUD_PATH="/SYNC_SAFE/backups/MacBookPro/Home.BAK/syncthing/myLibrary/MySecurity/Bitwarden"
   BACKUP_FILENAME="bitwarden_backup_$(date +%F).json"
 
   # Check if BW_SESSION is set
