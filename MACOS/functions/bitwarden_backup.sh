@@ -2,10 +2,22 @@
 
 echo "Sourcing variables from $VARIABLES_PATH"
 source $VARIABLES_PATH
+source $MENU_FUNCTIONS_SH
 
 bitwarden_backup() {
+  # Get password from keychain
+  local encryption_key=$(get_system_password "bitwarden")
+  
+  # Check if encryption key exists
+  if [[ -z "$encryption_key" ]]; then
+      echo "Error: No encryption key found in keychain. Backup aborted."
+      exit 1
+  fi
+
   # Variables
-  export BW_SESSION=$(bw unlock --raw)
+  if [[ -z "$BW_SESSION" ]]; then
+    export BW_SESSION=$(bw unlock --raw)
+  fi
   BACKUP_PATH="$SYNCTHING_PATH/myLibrary/MySecurity/Bitwarden"
   PCLOUD_PATH="/SYNC_SAFE/backups/MacBookPro/Home.BAK/syncthing/myLibrary/MySecurity/Bitwarden"
   BACKUP_FILENAME="bitwarden_backup_$(date +%F).json"
@@ -16,33 +28,17 @@ bitwarden_backup() {
       exit 1
   fi
 
-  # Prompt the user for the encryption key, checking for a match
-  while true; do
-      read -sp "Enter encryption key: " ENCRYPT_KEY_1
-      echo ""
-      read -sp "Confirm encryption key: " ENCRYPT_KEY_2
-      echo ""
-      
-      if [[ "$ENCRYPT_KEY_1" == "$ENCRYPT_KEY_2" ]]; then
-          ENCRYPT_KEY="$ENCRYPT_KEY_1"
-          break
-      else
-          echo "Error: The encryption keys do not match. Please try again."
-      fi
-  done
-
+  # Use encryption key from keychain
+  ENCRYPT_KEY="$encryption_key"
+  
   # Export vault data using BW_SESSION
   bw sync --session $BW_SESSION  # Optional: sync vault to ensure latest data
   bw export --format json --output "$BACKUP_PATH/$BACKUP_FILENAME" --session $BW_SESSION
 
   # Encrypt the backup
-  if [[ -n "$ENCRYPT_KEY" ]]; then
-      openssl enc -aes-256-cbc -salt -pbkdf2 -in "$BACKUP_PATH/$BACKUP_FILENAME" -out "$BACKUP_PATH/$BACKUP_FILENAME.enc" -pass pass:$ENCRYPT_KEY
-      rm "$BACKUP_PATH/$BACKUP_FILENAME"  # Remove unencrypted backup
-      echo "Backup completed and encrypted: $BACKUP_PATH/$BACKUP_FILENAME.enc"
-  else
-      echo "No encryption key provided. Backup saved without encryption: $BACKUP_PATH/$BACKUP_FILENAME"
-  fi
+  openssl enc -aes-256-cbc -salt -pbkdf2 -in "$BACKUP_PATH/$BACKUP_FILENAME" -out "$BACKUP_PATH/$BACKUP_FILENAME.enc" -pass pass:$encryption_key
+  rm "$BACKUP_PATH/$BACKUP_FILENAME"  # Remove unencrypted backup
+  echo "Backup completed and encrypted: $BACKUP_PATH/$BACKUP_FILENAME.enc"
 
   # Sync with rclone to pCloud
   if rclone sync "$BACKUP_PATH" "pcloudCrypt:$PCLOUD_PATH"; then

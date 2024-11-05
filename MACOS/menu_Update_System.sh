@@ -3,7 +3,6 @@
 # Path to the functions file
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 source $SELF_PATH/menu_functions.sh
-source $SELF_PATH/menu_Backups.sh
 
 MENU_PATH="Main Menu > Update System"
 

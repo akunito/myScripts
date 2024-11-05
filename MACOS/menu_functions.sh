@@ -17,9 +17,9 @@ NC='\033[0m' # No Color
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 
 # Include VARIABLES.sh
-source $SELF_PATH/VARIABLES.sh
+source $VARIABLES_PATH
 # Include NETWORK.sh
-source $SELF_PATH/../NETWORK.sh
+source $NETWORK_PATH
 
 wait_for_user_input() {
     echo ""
@@ -52,14 +52,18 @@ sync_directory_to_backup_efficiently() {
     # Usage: sync_directory_to_backup_efficiently "/home/akunito/" "/mnt/DATA_4TB/backups/NixOS_homelab_home/" "EXCLUDEcontentOfDIR1/** EXCLUDEfullDIR2"
     local source_path="$1"
     local destination_path="$2"
-    local exclude_paths="$3"
-    
-    sleep 2
+    local base_paths_to_exclude=".com.apple.backupd* *.sock */dev/* .DS_Store */.DS_Store .tldrc/ \
+    .cache/ .Cache/ cache/ Cache/ */.cache/ */.Cache/ */cache/ */Cache/ \
+    .trash/ .Trash/ trash/ Trash/ */.trash/ */.Trash/ */trash/ */Trash/ "
+    # Concat $base_paths_to_exclude with $3
+    local exclude_paths="$base_paths_to_exclude $3"
+
     # Print the colored message to stderr so it doesn't affect the return value
     echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
     
-    # local cmd="rsync -avh --delete --links --progress --exclude \".DS_Store\" --exclude \"*/.DS_Store\""
-    local cmd="rclone sync --links -P --exclude \".DS_Store\" --exclude \"*/.DS_Store\""
+    local cmd="rsync -aP"
+    # local cmd="rclone sync --links -P"
+    
     
     # If exclude_paths is not empty, add each exclude path
     if [ -n "$exclude_paths" ]; then
@@ -179,6 +183,15 @@ EOF
     local system_name="$1"
     local keychain_name="SSH_Systems"
     
+    # Notify by console and MacOS notifications about the attempt
+    # Check if the system is macOS
+    if [[ "$(uname)" == "Darwin" ]]; then
+        osascript -e 'display notification "Trying to get password from keychain..." with title '$system_name''
+    else
+        # Space for other systems to be scripted
+        echo -e "\nFor no Mac systems: If you need notifications, implement them here."
+    fi
+    echo -e "${YELLOW}Trying to get password from keychain...${NC}"
     # Try to get password from keychain
     password=$(security find-generic-password -a "$system_name" -s "$keychain_name" -w 2>/dev/null)
     
@@ -198,11 +211,24 @@ EOF
 ssh_interactive_command() {
     local ssh_connection="${1}"
     local command="$2"
+    local enable_log="$3"
+    
+    # if: enable_log is "false", 
+    # then: dont generate logs
+    # else: generate logs and rotate the log file, executing the script in the remote machine
+    if [ "$enable_log" == "false" ]; then
+        additional_command=""
+        echo -e "${YELLOW}logs disabled${NC}"
+    else
+        additional_command="| tee -a \"maintenance.log\""
+        rotate_log="${ssh_connection} -t 'sh /home/akunito/myScripts/rotateLogFile.sh; echo \"log file has been rotated\"; exit'"
+        eval "${rotate_log}"
+    fi
 
     local ssh_message="${ssh_connection} -t '
     touch \"maintenance.log\";
 
-    ${command} | tee -a \"maintenance.log\";
+    ${command} ${additional_command};
 
     echo -e \"\n\033[1;32mTask completed!\033[0m\";
     echo -e \"\033[1;33mThe SSH session will close in 8 seconds. Press ENTER to stay connected...\033[0m\";
@@ -220,14 +246,14 @@ update_nixos() {
     local username="$2"
     local flake_alias="$3"
     local system_name="$4" # System name that will be used to get the password from the keychain
-    
+
     # Get password from keychain
     local password=$(get_system_password "$system_name")
     if [ $? -ne 0 ]; then
         show_dialog_message msgbox "Password operation cancelled"
         return 1
     fi
-
+    
     echo -e "${GREEN}Updating the $system_name system...${NC}"
     ssh_interactive_command "$ssh_connection" "sh \"/home/$username/.dotfiles/install.sh\" \"/home/$username/.dotfiles\" \"$flake_alias\" \"$password\" -s"
 }
@@ -243,6 +269,7 @@ Arguments:
     ssh_connection   SSH connection string (e.g., "ssh username@serverIP")
     system_name      Name of the system (used for password retrieval)
     command          Command to execute (use 'sudo' if root access needed)
+    --no-log         Disable logging
 
 Example:
     ssh_command "ssh username@serverIP" "mysystem" "sudo apt update"
@@ -254,7 +281,14 @@ EOF
     local ssh_connection="$1"
     local system_name="$2"
     local command="$3"
-    
+
+    # if --no-log is received as parameter, make enable_log false, otherwise empty it
+    for arg in "$@"; do
+        if [[ "$arg" == "--no-log" ]]; then
+            enable_log="false"
+        fi
+    done
+
     # Set $SUDO true if $command contains sudo
     local SUDO=false
     if [[ "$command" == *"sudo"* ]]; then
@@ -274,8 +308,7 @@ EOF
     command=$(echo "$command" | sed "s/sudo/$SUDO_CMD/g")
 
     echo -e "\nUpdating the $system_name system..."
-    ssh_interactive_command "$ssh_connection" "$command"
-    wait_for_user_input
+    ssh_interactive_command "$ssh_connection" "$command" "$enable_log"
 }
 
 mount_all() {
@@ -299,4 +332,3 @@ compress_pics() {
         show_dialog_message msgbox "Error compressing pictures"
     fi
 }
-

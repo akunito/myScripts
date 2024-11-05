@@ -21,6 +21,7 @@ MYSCRIPTS_PATH="$SYNCTHING_PATH/git_repos/mySCRIPTS"
   # /MACOS
     MENU_SH="$MYSCRIPTS_PATH/MACOS/menu.sh"
     STARTUP_SH="$MYSCRIPTS_PATH/MACOS/startup.sh"
+    MENU_FUNCTIONS_SH="$MYSCRIPTS_PATH/MACOS/menu_functions.sh"
     # /AppleScript
     # /audioControl
       # microphone.sh
