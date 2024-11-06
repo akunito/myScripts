@@ -56,7 +56,7 @@ perform_backup() {
             ssh_command "$SSH_Server" "DATA_4TB" "$command" --no-log
             sleep 8
             echo -e "======== 2/3: Backing up /Machines ..."
-            command="rclone sync --links -P --stats=1s \"/mnt/DATA_4TB/Machines/\" \"pcloudCrypt:/SYNC_SAFE/Machines/\""
+            command="rclone sync --links -P --stats=1s --exclude \"*.iso\" --exclude \"ISOs/\" \"/mnt/DATA_4TB/Machines/\" \"pcloudCrypt:/SYNC_SAFE/Machines/\""
             echo "command: $command"
             sleep 8
             ssh_command "$SSH_Server" "DATA_4TB" "$command" --no-log

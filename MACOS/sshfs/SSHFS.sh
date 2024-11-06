@@ -38,10 +38,15 @@ mount_disk() {
     local ip="$1"
     echo "Attempting to mount $VOLUME_NAME at $DESTINATION using IP: $ip"
     
-    # Unmount if already mounted
+    # Check if $DESTINATION is already mounted
     if mount | grep -q "$DESTINATION"; then
-        echo "$DESTINATION is already mounted. Unmounting..."
-        diskutil unmount force "$DESTINATION" || { echo "Error unmounting $DESTINATION"; return 1; }
+        # Check if the drive responds to ls command, if not, unmount it
+        if ! ls "$DESTINATION" > /dev/null 2>&1; then
+            echo "$DESTINATION is already mounted but not responding. Unmounting..."
+            diskutil unmount force "$DESTINATION" || { echo "Error unmounting $DESTINATION"; return 1; }
+        else
+            echo "$DESTINATION is already mounted and responding. Skipping re mount."
+        fi
     fi
 
     # Create directory if it doesn't exist
