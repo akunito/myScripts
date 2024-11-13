@@ -44,5 +44,5 @@ MYSCRIPTS_PATH="$SYNCTHING_PATH/git_repos/mySCRIPTS"
       STARTUP_INTMONITOR_SH="$MYSCRIPTS_PATH/MACOS/startupSource/startup_InternalMonitor.sh"
 
 # /.config
-  YABAIRC_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabairc"
-  YABAI_FUNCTIONS_PATH="$SYNCTHING_PATH/git_repos/.config/yabai/yabai_functions.sh"
+  YABAIRC_PATH="/Users/akunito/.config/yabai/yabairc"
+  YABAI_FUNCTIONS_PATH="/Users/akunito/.config/yabai/yabai_functions.sh"
