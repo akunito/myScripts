@@ -394,3 +394,65 @@ compress_pics() {
         show_dialog_message msgbox "Error compressing pictures"
     fi
 }
+
+sync_docs_to_ssh_project() {
+    # Variables
+    local LOCAL_DIR="$1"   # your local directory path
+    local REMOTE_USER="$2" # your remote username
+    local REMOTE_HOST="$3" # your remote host (IP or domain)
+    local REMOTE_DIR="$4"  # your remote directory path
+
+    echo "LOCAL_DIR: $LOCAL_DIR"
+    echo "REMOTE_USER: $REMOTE_USER"
+    echo "REMOTE_HOST: $REMOTE_HOST"
+    echo "REMOTE_DIR: $REMOTE_DIR"
+
+    # Check if the local directory exists
+    if [ ! -d "$LOCAL_DIR" ]; then
+        echo "Error: Local directory $LOCAL_DIR does not exist."
+        exit 1
+    fi
+
+    # Use rsync to copy .md files while preserving directory structure
+    echo "Starting transfer of .md files from $LOCAL_DIR to $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR..."
+    rsync -av --include="*/" --include="*.md" --exclude="*" \
+        --prune-empty-dirs \
+        "$LOCAL_DIR"/ \
+        "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
+
+    # Generate a list of .md files in the local directory
+    echo "Generating list of .md files in $LOCAL_DIR..."
+    find "$LOCAL_DIR" -name '*.md' > /tmp/local_md_files.txt
+
+    # Transfer the list to the remote server
+    echo "Transferring list of .md files to $REMOTE_USER@$REMOTE_HOST..."
+    scp /tmp/local_md_files.txt "$REMOTE_USER@$REMOTE_HOST:/tmp/local_md_files.txt"
+
+    # Ask the user if they want to remove the .md files that are not in the source
+    echo -e "\n"
+    read -p "Do you want to remove .md files in $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR that are not in $LOCAL_DIR? (y/N): " confirm
+    confirm=${confirm:-N}
+
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        # Remove .md files in the destination that are not in the source
+        echo "Removing .md files in $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR that are not in $LOCAL_DIR..."
+        ssh "$REMOTE_USER@$REMOTE_HOST" "
+            cd '$REMOTE_DIR'
+            find . -name '*.md' | while read -r file; do
+                if ! grep -q \"\$(realpath --relative-to='$REMOTE_DIR' \"\$file\")\" /tmp/local_md_files.txt; then
+                    rm -f \"\$file\"
+                fi
+            done
+            rm /tmp/local_md_files.txt
+        "
+    else
+        echo "Skipping removal of .md files."
+    fi
+
+    # Check if the transfer was successful
+    if [ $? -eq 0 ]; then
+        echo "Transfer complete."
+    else
+        echo "Error: Failed to transfer files."
+    fi
+}

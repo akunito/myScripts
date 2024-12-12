@@ -18,6 +18,7 @@ main_menu() {
                         4 "Compress PICS" \
                         5 "Virsh Manager" \
                         6 "Backups" \
+                        7 "Update Project Documents" \
                         Q "Quit" \
                         3>&1 1>&2 2>&3)
 
@@ -28,6 +29,7 @@ main_menu() {
             4) $SELF_PATH/menu_Compress_PICS.sh ;;
             5) $SELF_PATH/menu_Virsh_Manager.sh ;;
             6) $SELF_PATH/menu_Backups.sh ;;
+            7) $SELF_PATH/menu_Update_projectDocs.sh ;;
             Q|q) clear && exit 0 ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac
