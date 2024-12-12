@@ -19,12 +19,13 @@ bitwarden_backup() {
     export BW_SESSION=$(bw unlock --raw)
   fi
   BACKUP_PATH="$SYNCTHING_PATH/myLibrary/MySecurity/Bitwarden"
-  PCLOUD_PATH="/SYNC_SAFE/backups/MacBookPro/Home.BAK/syncthing/myLibrary/MySecurity/Bitwarden"
+  PCLOUD_PATH="/SYNC_SAFE/BACKUP/backups/MacBookPro/Home.BAK/syncthing/myLibrary/MySecurity/Bitwarden"
   BACKUP_FILENAME="bitwarden_backup_$(date +%F).json"
 
   # Check if BW_SESSION is set
   if [[ -z "$BW_SESSION" ]]; then
       echo "Error: BW_SESSION is not set. Please log in and set the BW_SESSION environment variable."
+      echo "You can use 'bw login' to log in"
       exit 1
   fi
 

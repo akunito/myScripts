@@ -10,70 +10,57 @@ fi
 SELF_PATH=$(dirname "$(readlink -f "$(which "$0")")")
 source $SELF_PATH/menu_functions.sh
 
+backup_by_ssh() {
+    local ssh_connection="$1"
+    local system_name="$2"
+    local script_path="$3"
+
+    # Get password from keychain
+    local password=$(get_system_password "$system_name")
+    if [ $? -ne 0 ]; then
+        show_dialog_message msgbox "Password operation cancelled"
+        return 1
+    fi
+
+    ssh_interactive_command "$ssh_connection" "sh \"$script_path\" \"$password\"" # we pass as $1 argument the password
+}
+
 perform_backup() {
     local backup_type="$1"
     
     case $backup_type in
         "myhome")
-            echo -e "\n======================== Backup my Home to DATA_4TB =========================="
+            echo -e "\n======================== Backup my Laptop =========================="
             eval $server_DATA_4TB_MOUNT
-            command=$(sync_directory_to_backup_efficiently "/Users/akunito/" "/Users/akunito/Volumes/sshfs/Data_4TB/backups/MacBookPro/Home.BAK/" \
-            "pCloudDrive/ pCloud*/ */git_repos/ */Sync_Everywhere/ \
-            Applications/ Desktop/ Documents/ Downloads/ Library/ Movies/ Music/ Pictures/ Public/ Volumes/")
-            eval "$command"
+            eval $server_MACAKUBACKUP_MOUNT
+            echo "======== Check your TIME MACHINE GUI to automate backups !"
+            echo "======== Listing local snapshots ..."
+            tmutil listlocalsnapshots /Volumes/TimeMachineBackup
+            sleep 2
             ;;
         "mybitwarden")
             echo -e "\n======================== Backup my Bitwarden to pCloudCrypt =========================="
             $SELF_PATH/functions/bitwarden_backup.sh
             ;;
-        "HomeLab_Home")
-            echo -e "\n======================== Backup HomeLab's Home to DATA_4TB =========================="
-            command=$(sync_directory_to_backup_efficiently "/home/akunito/" "/mnt/DATA_4TB/backups/NixOS_homelab/Home.BAK/" \
-            "")
-            ssh_command "$SSH_Server" "HomeLab" "$command"
-            ;;
         "AgaLaptop_Home")
-            echo -e "\n======================== Backup AgaLaptop's Home to DATA_4TB =========================="
-            echo "======== 1/2: Backing up locally ..."
-            command=$(sync_directory_to_backup_efficiently "/home/aga/" "/home/aga/.Backups/Home.BAK/" \
-            "pCloudDrive/ .Backups/ */bottles/ Desktop/ Downloads/ Videos/")
-            ssh_command "$SSH_LaptopAga" "AgaLaptop" "$command"
-
-            echo -e "\n======== 2/2: Backing up to DATA_4TB ..."
-            eval $server_DATA_4TB_MOUNT
-            eval $agalaptop_HOME_MOUNT && sleep 2
-            command=$(sync_directory_to_backup_efficiently "/Users/akunito/Volumes/sshfs/agalaptop_home/.Backups/Home.BAK/" "/Users/akunito/Volumes/sshfs/Data_4TB/backups/AgaLaptop/Home.BAK/")
-            eval "$command"
+            echo -e "\n======================== Backup AgaLaptop's Home to local directory =========================="
+            echo "======== Uploading script to server ..." && sleep 2
+            scp $SELF_PATH/remoteScripts/nixos/agalaptop_backup.sh $agalaptop_USER@$IP_LaptopAga_WIFI:/home/aga/myScripts/
+            echo "======== Running script on server ..." && sleep 2
+            backup_by_ssh "$SSH_LaptopAga" "AgaLaptop" "/home/aga/myScripts/agalaptop_backup.sh"
+            echo "======== DONE. The local backup will be sync to Nextcloud."
             ;;
-        "DATA_4TB_to_pCloudCrypt")
-            echo -e "\n======================== Backup DATA_4TB to pCloudCrypt =========================="
-            echo "======== 1/3: Backing up /backups ..."
-            echo "(Skipping TimeMachine '.sparsebundle' backups)"
-            command="rclone sync --links -P --stats=1s --exclude \"*.sparsebundle/\" --exclude \"ArchLinux_HostServer/\" \
-            \"/mnt/DATA_4TB/backups/\" \"pcloudCrypt:/SYNC_SAFE/backups/\""
-            echo "command: $command"
-            sleep 8
-            ssh_command "$SSH_Server" "DATA_4TB" "$command" --no-log
-            sleep 8
-            echo -e "======== 2/3: Backing up /Machines ..."
-            command="rclone sync --links -P --stats=1s --exclude \"*.iso\" --exclude \"ISOs/\" \"/mnt/DATA_4TB/Machines/\" \"pcloudCrypt:/SYNC_SAFE/Machines/\""
-            echo "command: $command"
-            sleep 8
-            ssh_command "$SSH_Server" "DATA_4TB" "$command" --no-log
-            sleep 8
-
-            echo -e "======== 3/3: Backing up /Warehouse ..."
-            command="rclone sync --links -P --stats=1s \"/mnt/DATA_4TB/Warehouse/\" \"pcloudCrypt:/SYNC_SAFE/Warehouse/\""
-            echo "command: $command"
-            sleep 8
-            ssh_command "$SSH_Server" "DATA_4TB" "$command" --no-log
-            sleep 8
+        "HomeLab_backups")
+            echo -e "\n======================== Backup Home && DATA_4TB locally && to cloud =========================="
+            echo "======== Uploading script to server ..." && sleep 2
+            scp $SELF_PATH/remoteScripts/nixos/homelab_backup.sh $server_USER@$IP_Server_ETH:/home/akunito/myScripts/
+            echo "======== Running script on server ..." && sleep 2
+            backup_by_ssh "$SSH_Server" "HomeLab" "/home/akunito/myScripts/homelab_backup.sh"
             ;;
         "all")
             perform_backup "myhome"
-            perform_backup "HomeLab_Home"
             perform_backup "AgaLaptop_Home"
-            perform_backup "DATA_4TB_to_pCloudCrypt"
+            perform_backup "HomeLab_backups"
             perform_backup "mybitwarden"
             ;;
     esac
@@ -88,9 +75,8 @@ backup_menu() {
                         1 "Backup EVERYTHING" \
                         2 "Backup my Home" \
                         3 "Backup my Bitwarden" \
-                        4 "Backup HomeLab's Home" \
-                        5 "Backup AgaLaptop's Home" \
-                        6 "Backup DATA_4TB to pCloudCrypt" \
+                        4 "Backup AgaLaptop's Home" \
+                        5 "Backup HomeLab backups" \
                         Q "Quit/Back" \
                         3>&1 1>&2 2>&3)
 
@@ -108,15 +94,11 @@ backup_menu() {
                 wait_for_user_input
                 ;;
             4)
-                perform_backup "HomeLab_Home"
-                wait_for_user_input
-                ;;
-            5)
                 perform_backup "AgaLaptop_Home"
                 wait_for_user_input
                 ;;
-            6)
-                perform_backup "DATA_4TB_to_pCloudCrypt"
+            5)
+                perform_backup "HomeLab_backups"
                 wait_for_user_input
                 ;;
             Q|q)

@@ -61,9 +61,70 @@ sync_directory_to_backup_efficiently() {
     # Print the colored message to stderr so it doesn't affect the return value
     echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
     
-    local cmd="rsync -aP"
+    local cmd="rsync -avpP --delete --delete-excluded"
     # local cmd="rclone sync --links -P"
     
+    # If exclude_paths is not empty, add each exclude path
+    if [ -n "$exclude_paths" ]; then
+        # Split exclude_paths on spaces and add each as --exclude
+        for path in $exclude_paths; do
+            cmd="$cmd --exclude \"$path\""
+        done
+    fi
+    
+    # Add source and destination paths
+    cmd="$cmd \"$source_path\" \"$destination_path\""
+    
+    printf "%s" "$cmd"
+}
+
+sync_directory_to_backup_efficiently_ssh() {
+    # Usage: sync_directory_to_backup_efficiently "/home/akunito/" "/mnt/DATA_4TB/backups/NixOS_homelab_home/" "EXCLUDEcontentOfDIR1/** EXCLUDEfullDIR2"
+    local source_path="$1"
+    local destination_path="$2"
+    local base_paths_to_exclude=".com.apple.backupd* *.sock */dev/* .DS_Store */.DS_Store .tldrc/ \
+    .cache/ .Cache/ cache/ Cache/ */.cache/ */.Cache/ */cache/ */Cache/ \
+    .trash/ .Trash/ trash/ Trash/ */.trash/ */.Trash/ */trash/ */Trash/ "
+    # Concat $base_paths_to_exclude with $3
+    local exclude_paths="$base_paths_to_exclude $3"
+
+    # Print the colored message to stderr so it doesn't affect the return value
+    echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
+    
+    local cmd="rsync -avpP --delete --delete-excluded \"ssh -p 22\""
+    # local cmd="rclone sync --links -P"
+    
+    # If exclude_paths is not empty, add each exclude path
+    if [ -n "$exclude_paths" ]; then
+        # Split exclude_paths on spaces and add each as --exclude
+        for path in $exclude_paths; do
+            cmd="$cmd --exclude \"$path\""
+        done
+    fi
+    
+    # Add source and destination paths
+    cmd="$cmd \"$source_path\" \"$destination_path\""
+    
+    printf "%s" "$cmd"
+}
+
+sync_directory_to_backup_efficiently_rclone() {
+    # rclone version uses rclone instead. This is better for copying from MacOS to Linux keeping permissions.
+
+    # Usage: sync_directory_to_backup_efficiently_rclone "/home/akunito/" "/mnt/DATA_4TB/backups/NixOS_homelab_home/" "EXCLUDEcontentOfDIR1/** EXCLUDEfullDIR2"
+    local source_path="$1"
+    local destination_path="$2"
+    local base_paths_to_exclude=".com.apple.backupd* *.sock */dev/* .DS_Store */.DS_Store .tldrc/ \
+    .cache/ .Cache/ cache/ Cache/ */.cache/ */.Cache/ */cache/ */Cache/ \
+    .trash/ .Trash/ trash/ Trash/ */.trash/ */.Trash/ */trash/ */Trash/ "
+    # Concat $base_paths_to_exclude with $3
+    local exclude_paths="$base_paths_to_exclude $3"
+
+    # Print the colored message to stderr so it doesn't affect the return value
+    echo -e "${YELLOW}Generating command to sync from $source_path to $destination_path...${NC}" >&2
+    
+    local cmd="rclone sync --links -P --stats=1s"
+    # local cmd="rclone sync --links -P"
     
     # If exclude_paths is not empty, add each exclude path
     if [ -n "$exclude_paths" ]; then
@@ -221,7 +282,7 @@ ssh_interactive_command() {
         echo -e "${YELLOW}logs disabled${NC}"
     else
         additional_command="| tee -a \"maintenance.log\""
-        rotate_log="${ssh_connection} -t 'sh /home/akunito/myScripts/rotateLogFile.sh; echo \"log file has been rotated\"; exit'"
+        rotate_log="${ssh_connection} -t 'sh ~/myScripts/rotateLogFile.sh; echo \"log file has been rotated\"; exit'"
         eval "${rotate_log}"
     fi
 
@@ -313,10 +374,11 @@ EOF
 
 mount_all() {
     show_dialog_message infobox "Mounting all..." 5
-    if $network_HOME_MOUNT &&
+    if #$network_HOME_MOUNT &&
        $server_HOME_MOUNT &&
        $server_DATA_4TB_MOUNT &&
-       $server_MACHINES_MOUNT &&
+       $server_MACAKUBACKUP_MOUNT &&
+       #$server_MACHINES_MOUNT &&
        $agalaptop_HOME_MOUNT; then
         show_dialog_message msgbox "Mounting complete"
     else
