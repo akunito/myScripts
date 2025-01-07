@@ -44,17 +44,17 @@ perform_backup() {
             ;;
         "AgaLaptop_Home")
             echo -e "\n======================== Backup AgaLaptop's Home to local directory =========================="
-            echo "======== Uploading script to server ..." && sleep 2
-            scp $SELF_PATH/remoteScripts/nixos/agalaptop_backup.sh $agalaptop_USER@$IP_LaptopAga_WIFI:/home/aga/myScripts/
-            echo "======== Running script on server ..." && sleep 2
+            # echo "======== Uploading script to server ..." && sleep 2
+            # scp $SELF_PATH/remoteScripts/nixos/agalaptop_backup.sh $agalaptop_USER@$IP_LaptopAga_WIFI:/home/aga/myScripts/
+            # echo "======== Running script on server ..." && sleep 2
             backup_by_ssh "$SSH_LaptopAga" "AgaLaptop" "/home/aga/myScripts/agalaptop_backup.sh"
             echo "======== DONE. The local backup will be sync to Nextcloud."
             ;;
         "HomeLab_backups")
             echo -e "\n======================== Backup Home && DATA_4TB locally && to cloud =========================="
-            echo "======== Uploading script to server ..." && sleep 2
-            scp $SELF_PATH/remoteScripts/nixos/homelab_backup.sh $server_USER@$IP_Server_ETH:/home/akunito/myScripts/
-            echo "======== Running script on server ..." && sleep 2
+            # echo "======== Uploading script to server ..." && sleep 2
+            # scp $SELF_PATH/remoteScripts/nixos/homelab_backup.sh $server_USER@$IP_Server_ETH:/home/akunito/myScripts/
+            # echo "======== Running script on server ..." && sleep 2
             backup_by_ssh "$SSH_Server" "HomeLab" "/home/akunito/myScripts/homelab_backup.sh"
             ;;
         "all")

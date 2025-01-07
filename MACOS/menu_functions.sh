@@ -252,7 +252,6 @@ EOF
         # Space for other systems to be scripted
         echo -e "\nFor no Mac systems: If you need notifications, implement them here."
     fi
-    echo -e "${YELLOW}Trying to get password from keychain...${NC}"
     # Try to get password from keychain
     password=$(security find-generic-password -a "$system_name" -s "$keychain_name" -w 2>/dev/null)
     

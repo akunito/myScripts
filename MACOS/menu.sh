@@ -19,6 +19,7 @@ main_menu() {
                         5 "Virsh Manager" \
                         6 "Backups" \
                         7 "Update Project Documents" \
+                        8 "Generate hash from password" \
                         Q "Quit" \
                         3>&1 1>&2 2>&3)
 
@@ -30,6 +31,7 @@ main_menu() {
             5) $SELF_PATH/menu_Virsh_Manager.sh ;;
             6) $SELF_PATH/menu_Backups.sh ;;
             7) $SELF_PATH/menu_Update_projectDocs.sh ;;
+            8) $SELF_PATH/menu_pass_hash.sh ;;
             Q|q) clear && exit 0 ;;
             *) show_dialog_message msgbox "Invalid option $REPLY" ;;
         esac

@@ -68,6 +68,9 @@ fi
 
 output_message "2. SERVICES"
 handle_services
+echo "check path to yabai functions $YABAI_FUNCTIONS_PATH"
+# fix floating windows after restarting yabai
+$YABAI_FUNCTIONS_PATH "set_windows_externalMonitors"
 
 output_message "3. QUIT APPS?"
 resultQuit=$(prompt_user "3. Quit all the apps?")
